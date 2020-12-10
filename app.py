@@ -12,12 +12,10 @@ import librosa
 from scipy.io import wavfile
 from tqdm import tqdm_notebook as tqdm
 import torch.nn.functional as F
-from fastai.basic_data import DatasetType
+#from fastai.basic_data import DatasetType
 
 import fastai
 from fastai.vision import *
-
-import librosa
 
 app = Flask(__name__)
 
@@ -73,7 +71,7 @@ def get_res():
     learn = load_learner('learner.pkl')
     learn.predict(open_image(fn[:-4] + '.png'))
 
-    return tuple(learn.predict(open_image(fn[:-4] + '.png'))[2].detach().cpu().numpy())[1]
+    return str(tuple(learn.predict(open_image(fn[:-4] + '.png'))[2].detach().cpu().numpy())[1])
 
 
 @app.route('/post', methods=['GET', 'POST'])
