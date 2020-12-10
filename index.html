@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Ahem, a Covid-19 Cough Test</title>
+    <meta charset="UTF-8" />
+    <meta name="description" content="..." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?		family=Montserrat:wght@900&family=Work+Sans:wght@300&display=swap"
+        rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap" rel="stylesheet" />
+
+    <style>
+        h1 {
+            text-align: center;
+            font-family: Raleway;
+            font-size: 50px;
+            margin: 0;
+            color: white;
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: normal;
+            font-family: "Work Sans", sans-serif;
+            font-size: 18px;
+            margin: 0;
+            color: white;
+            margin-top: 30px;
+            line-height: 1.8;
+        }
+
+        h3 {
+            font-family: Raleway;
+            color: white;
+            letter-spacing: 4px;
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            margin-bottom: 0;
+        }
+
+        button {
+            height: 130px;
+            width: 130px;
+            border-radius: 50%;
+            border: 8px solid #f44336;
+            display: inline-block;
+            background-color: #ff7961;
+            font-family: Raleway;
+            color: #004e92;
+            font-size: 15px;
+            letter-spacing: 3px;
+            margin: 0px 10px 0px 10px;
+            outline: none;
+        }
+
+        button:hover {
+            cursor: pointer;
+            background-color: white;
+        }
+
+        #recordingBox {
+            text-align: center;
+            padding: 30px;
+            margin: 20px 100px 20px 100px;
+        }
+
+        #header {
+            padding-top: 80px;
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+
+        .popup .overlay {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+            display: none;
+        }
+
+        .popup .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #ff7961;
+            width: 600px;
+            height: 300px;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 20px;
+        }
+
+        .popup .content h1 {
+            font-family: Raleway, sans-serif;
+            font-size: 50px;
+        }
+
+        .popup .content p {
+            font-size: 35px;
+            color: white;
+            font-family: "Work Sans", sans-serif;
+        }
+
+        .popup .close-btn {
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 30px;
+            height: 30px;
+            background: #222;
+            color: #fff;
+            font-size: 25px;
+            font-weight: 600;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+        }
+
+        .popup.active .overlay {
+            display: block;
+        }
+
+        .popup.active .content {
+            transition: all 300ms ease-in-out;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes move_wave {
+            0% {
+                transform: translateX(0) translateZ(0) scaleY(1);
+            }
+
+            50% {
+                transform: translateX(-25%) translateZ(0) scaleY(0.55);
+            }
+
+            100% {
+                transform: translateX(-50%) translateZ(0) scaleY(1);
+            }
+        }
+
+        .waveWrapper {
+            overflow: hidden;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            z-index: -3;
+            margin: auto;
+        }
+
+        .waveWrapperInner {
+            position: absolute;
+            width: 100%;
+            overflow: hidden;
+            height: 100%;
+            bottom: -1px;
+            background-image: linear-gradient(to top, #004e92 20%, #000428 80%);
+        }
+
+        .bgTop {
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .bgMiddle {
+            z-index: -2;
+            opacity: 0.75;
+        }
+
+        .bgBottom {
+            z-index: -3;
+        }
+
+        .wave {
+            position: absolute;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background-repeat: repeat no-repeat;
+            background-position: 0 bottom;
+            transform-origin: center bottom;
+        }
+
+        .waveTop {
+            background-size: 50% 100px;
+        }
+
+        .waveAnimation .waveTop {
+            animation: move-wave 3s;
+            -webkit-animation: move-wave 3s;
+            -webkit-animation-delay: 1s;
+            animation-delay: 1s;
+        }
+
+        .waveMiddle {
+            background-size: 50% 120px;
+        }
+
+        .waveAnimation .waveMiddle {
+            animation: move_wave 10s linear infinite;
+        }
+
+        .waveBottom {
+            background-size: 50% 100px;
+        }
+
+        .waveAnimation .waveBottom {
+            animation: move_wave 15s linear infinite;
+        }
+
+        #visualizerDiv {
+            width: auto;
+            height: auto;
+            margin: 25px 0px 25px 0px;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script defer>
+        const URL = "http://127.0.0.1:5000/post";
+
+        function uploadWav() {
+            //Prepare form data
+            let reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = (event) => {
+                // The contents of the BLOB are in reader.result:
+                let formData = new FormData();
+                formData.append("file", reader.result);
+                callService(formData);
+            }
+        }
+        function togglePopup(result) {
+
+            document.getElementById("popup-1").classList.toggle("active");
+            let per = (100 * parseFloat(result)).toFixed(1);
+            let msg = "There is a " + per + "% chance that you have COVID-19."
+            document.getElementById("chance").innerText = document.getElementById("chance").innerText = msg;
+            if (per < 50) { document.getElementById('confetti').style.visibility = "visible"; }
+          	else { document.getElementById('confetti').style.visibility = "hidden"; }
+        }
+
+        function callService(formData) {
+            //Send OCR Parsing request asynchronously
+            jQuery.ajax({
+                url: URL,
+                data: formData,
+                contentType: "multipart/form-data",
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: "POST",
+                success: function (ocrParsedResult) {
+                    //Get the parsed results, exit code and error message and details
+                    console.log("Success!");
+                    console.log(ocrParsedResult);
+                    togglePopup(ocrParsedResult);
+                },
+            });
+        }
+
+        let blob;
+        let chunks;
+
+        window.onload = function () {
+
+            // set up basic variables for app
+            const record = document.querySelector('#record');
+            const stop = document.querySelector('#stop');
+            const soundClips = document.querySelector('#sound-clips');
+            const canvas = document.querySelector('#visualizer');
+            const mainSection = document.querySelector('#main-controls');
+
+            // visualiser setup - create web audio api context and canvas
+
+            let audioCtx;
+            const canvasCtx = canvas.getContext("2d");
+
+            //main block for doing the audio recording
+
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+            if (navigator.getUserMedia) {
+                console.log('getUserMedia supported.');
+
+                document.getElementById('message').innerText = 'ENABLE MICROPHONE ACCESS';
+
+                const constraints = { audio: true };
+                chunks = [];
+
+                let onSuccess = function (stream) {
+                    document.getElementById('message').innerText = 'RECORD A SINGLE COUGH';
+
+                    const mediaRecorder = new MediaRecorder(stream);
+
+                    visualize(stream);
+
+                    record.onclick = function () {
+                        if ((record.innerText == 'Record') || (record.innerText == 'Re-record')) {
+                            mediaRecorder.start();
+                            console.log(mediaRecorder.state);
+                            console.log("recorder started");
+                            record.style.background = "red";
+
+                            record.innerText = 'Stop';
+
+                            if (!document.getElementById('submit')) {
+                                let submit = document.createElement("button");
+                                submit.id = 'submit';
+                                submit.innerText = 'Submit';
+                                submit.onclick = uploadWav;
+                                // submit.onclick = togglePopup;
+                                document.getElementById('buttons').appendChild(submit);
+                            }
+                        }
+                        else {
+                            mediaRecorder.stop();
+                            console.log(mediaRecorder.state);
+                            console.log("recorder stopped");
+                            record.style.background = "";
+                            record.style.color = "";
+                            // mediaRecorder.requestData();
+
+                            record.innerText = 'Re-record';
+                        }
+                    }
+
+                    mediaRecorder.onstop = function (e) {
+                        console.log("data available after MediaRecorder.stop() called.");
+
+                        const audio = document.getElementById('cough');
+
+                        blob = new Blob(chunks, { 'type': 'audio/wav; codecs=opus' });
+
+                        chunks = [];
+
+                        const audioURL = window.URL.createObjectURL(blob);
+                        audio.src = audioURL;
+
+                        audio.controls = true;
+
+                        console.log("recorder stopped");
+                    }
+
+                    mediaRecorder.ondataavailable = function (e) {
+                        chunks.push(e.data);
+                    }
+                }
+
+                let onError = function (err) {
+                    console.log('The following error occured: ' + err);
+                }
+
+                navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+
+            } else {
+                console.log('getUserMedia not supported on your browser!');
+            }
+
+            function visualize(stream) {
+                if (!audioCtx) {
+                    audioCtx = new AudioContext();
+                }
+
+                const source = audioCtx.createMediaStreamSource(stream);
+
+                const analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 2048;
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+
+                source.connect(analyser);
+                //analyser.connect(audioCtx.destination);
+
+                draw()
+
+                function draw() {
+                    const WIDTH = canvas.width
+                    const HEIGHT = canvas.height;
+
+                    requestAnimationFrame(draw);
+
+                    analyser.getByteTimeDomainData(dataArray);
+
+                    canvasCtx.fillStyle = 'rgb(0, 106, 201)';
+                    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+                    canvasCtx.lineWidth = 4;
+                    canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+
+                    canvasCtx.beginPath();
+
+                    let sliceWidth = WIDTH * 1.0 / bufferLength;
+                    let x = 0;
+
+
+                    for (let i = 0; i < bufferLength; i++) {
+
+                        let v = dataArray[i] / 128.0;
+                        let y = v * HEIGHT / 2;
+
+                        if (i === 0) {
+                            canvasCtx.moveTo(x, y);
+                        } else {
+                            canvasCtx.lineTo(x, y);
+                        }
+
+                        x += sliceWidth;
+                    }
+
+                    canvasCtx.lineTo(canvas.width, canvas.height / 2);
+                    canvasCtx.stroke();
+
+                }
+            }
+
+            window.onresize = function () {
+                canvas.width = mainSection.offsetWidth;
+            };
+
+            window.onresize();
+
+        }
+    </script>
+</head>
+
+<body>
+    <img id='confetti' src='https://img1.picmix.com/output/stamp/normal/7/1/7/3/1183717_3e709.gif'
+        style='position:absolute;width:1000px;height:1000px;visibility:hidden'>
+    <div id="header">
+        <img src="https://i.imgur.com/p77j3a4_d.webp?maxwidth=760&fidelity=grand" alt=" " title="artist" />
+        <!-- <div>Icons made by <a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> NEED TO ATTRIBUTE THE ICON-->
+        <h1>A H E M</h1>
+        <h2>The AHEM Cough Test compares your cough sample with data utilizing A(i)HEM to determine the likelihood that
+            you have COVID-19.</h2>
+    </div>
+    <div id="recordingBox">
+        <h3 id="message"></h3>
+        <section id="sound-clips">
+            <article><audio id="cough" controls="" src="" style="outline: none;"></audio></article>
+        </section>
+        <section id="main-controls">
+            <div id="visualizerDiv">
+                <canvas id="visualizer" style="border-radius: 20px; width:600px;" height="200px"></canvas>
+            </div>
+            <div id="buttons">
+                <button id="record">Record</button>
+            </div>
+        </section>
+    </div>
+    <div class="waveWrapper waveAnimation">
+        <div class="waveWrapperInner bgTop">
+            <div class="wave waveTop"
+                style="background-image: url('http://front-end-noobs.com/jecko/img/wave-top.png');"></div>
+        </div>
+        <div class="waveWrapperInner bgMiddle">
+            <div class="wave waveMiddle"
+                style="background-image: url('http://front-end-noobs.com/jecko/img/wave-mid.png');"></div>
+        </div>
+        <div class="waveWrapperInner bgBottom">
+            <div class="wave waveBottom"
+                style="background-image: url('http://front-end-noobs.com/jecko/img/wave-bot.png');"></div>
+        </div>
+    </div>
+    <div class="popup" id="popup-1">
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="close-btn" onclick="togglePopup()">&times;</div>
+            <h1>Your Result</h1>
+            <p id='chance'>There is a _% chance that you have COVID-19.</p>
+        </div>
+    </div>
+</body>
+
+</html>
